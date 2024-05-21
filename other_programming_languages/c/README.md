@@ -1,0 +1,1 @@
+gcc -o cubes main.c -lGL -lGLEW -lglfw -lm

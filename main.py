@@ -37,17 +37,11 @@ class MyApp(ShowBase):
                     cube_node.attachNewNode(cube_model)
 
         # Set up keyboard controls
-        self.accept('escape', self.quit)
-        self.accept('w', self.move_forward)
-        self.accept('s', self.move_backward)
-        self.accept('a', self.move_left)
-        self.accept('d', self.move_right)
-        self.accept('e', self.move_down)
-        self.accept('r', self.move_up)
-        self.accept('arrow_left', self.rotate_left)
-        self.accept('arrow_right', self.rotate_right)
-        self.accept('arrow_up', self.rotate_up)
-        self.accept('arrow_down', self.rotate_down)
+        self.keys = {'w': False, 's': False, 'a': False, 'd': False, 'q': False, 'e': False,
+                     'arrow_left': False, 'arrow_right': False, 'arrow_up': False, 'arrow_down': False}
+        for key in self.keys:
+            self.accept(key, self.update_key, [key, True])
+            self.accept(key+'-up', self.update_key, [key, False])
 
         # Enable wireframe mode
         base.toggleWireframe()
@@ -56,6 +50,9 @@ class MyApp(ShowBase):
         props = WindowProperties()
         props.setCursorHidden(True)
         self.win.requestProperties(props)
+
+        # Start the movement task
+        self.taskMgr.add(self.move_task, 'Move Task')
 
     def create_cube_model(self):
         format = GeomVertexFormat.getV3n3cpt2()
@@ -109,38 +106,35 @@ class MyApp(ShowBase):
 
         return cube_node
 
-    def move_forward(self):
-        self.camera.setY(self.camera, 1)
+    def update_key(self, key, value):
+        self.keys[key] = value
 
-    def move_backward(self):
-        self.camera.setY(self.camera, -1)
+    def move_task(self, task):
+        speed = 0.1
+        rot_speed = 1.0
 
-    def move_left(self):
-        self.camera.setX(self.camera, -1)
+        if self.keys['w']:
+            self.camera.setY(self.camera, speed)
+        if self.keys['s']:
+            self.camera.setY(self.camera, -speed)
+        if self.keys['a']:
+            self.camera.setX(self.camera, -speed)
+        if self.keys['d']:
+            self.camera.setX(self.camera, speed)
+        if self.keys['q']:
+            self.camera.setZ(self.camera, -speed)
+        if self.keys['e']:
+            self.camera.setZ(self.camera, speed)
+        if self.keys['arrow_left']:
+            self.camera.setH(self.camera.getH() + rot_speed)
+        if self.keys['arrow_right']:
+            self.camera.setH(self.camera.getH() - rot_speed)
+        if self.keys['arrow_up']:
+            self.camera.setP(self.camera.getP() + rot_speed)
+        if self.keys['arrow_down']:
+            self.camera.setP(self.camera.getP() - rot_speed)
 
-    def move_right(self):
-        self.camera.setX(self.camera, 1)
-
-    def move_down(self):
-        self.camera.setZ(self.camera, -1)
-
-    def move_up(self):
-        self.camera.setZ(self.camera, 1)
-
-    def rotate_left(self):
-        self.camera.setH(self.camera.getH() + 5)
-
-    def rotate_right(self):
-        self.camera.setH(self.camera.getH() - 5)
-
-    def rotate_up(self):
-        self.camera.setP(self.camera.getP() + 5)
-
-    def rotate_down(self):
-        self.camera.setP(self.camera.getP() - 5)
-
-    def quit(self):
-        self.userExit()
+        return task.cont
 
 app = MyApp()
 app.run()

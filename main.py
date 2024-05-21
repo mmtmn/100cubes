@@ -30,7 +30,7 @@ class MyApp(ShowBase):
         # Create cubes
         for i in range(10):
             for j in range(10):
-                for k in range(100):
+                for k in range(10):
                     cube_node = self.render.attachNewNode('cube_node')
                     cube_node.setScale(0.5)
                     cube_node.setPos(i - 4.5, j - 4.5, k)
@@ -42,7 +42,7 @@ class MyApp(ShowBase):
         self.accept('s', self.move_backward)
         self.accept('a', self.move_left)
         self.accept('d', self.move_right)
-        self.accept('q', self.move_down)
+        self.accept('e', self.move_down)
         self.accept('r', self.move_up)
         self.accept('arrow_left', self.rotate_left)
         self.accept('arrow_right', self.rotate_right)

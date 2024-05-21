@@ -144,9 +144,9 @@ void display() {
     gluLookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, 0.0f, 1.0f, 0.0f);
 
     // Draw cubes with different colors based on depth
-    for (int i = 0; i < 30; i++) {
-        for (int j = 0; j < 30; j++) {
-            for (int k = 0; k < 30; k++) {
+    for (int i = 0; i < 100; i++) {
+        for (int j = 0; j < 100; j++) {
+            for (int k = 0; k < 100; k++) {
                 float r = (float)i / 20.0f;
                 float g = (float)j / 20.0f;
                 float b = (float)k / 20.0f;

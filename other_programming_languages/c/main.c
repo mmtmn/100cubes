@@ -7,11 +7,13 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+#define M_PI 3.14159265358979323846
+
 GLFWwindow* window;
 bool keys[1024];
 double lastX = WINDOW_WIDTH / 2, lastY = WINDOW_HEIGHT / 2;
-float cameraX = 0, cameraY = 0, cameraZ = 5;
-float cameraYaw = 0, cameraPitch = 0;
+float cameraX = 0, cameraY = 0, cameraZ = 20;
+float cameraYaw = -90.0f, cameraPitch = 0.0f;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
@@ -42,24 +44,36 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 void move_camera() {
-    float cameraSpeed = 0.1f;
-    float cameraSensitivity = 0.1f;
+    float cameraSpeed = 0.2f;
+
+    float yaw = cameraYaw * M_PI / 180.0f;
+    float pitch = cameraPitch * M_PI / 180.0f;
+
+    float frontX = cos(yaw) * cos(pitch);
+    float frontY = sin(pitch);
+    float frontZ = sin(yaw) * cos(pitch);
 
     if (keys[GLFW_KEY_W]) {
-        cameraX += cameraSpeed * sin(cameraYaw * M_PI / 180.0);
-        cameraZ -= cameraSpeed * cos(cameraYaw * M_PI / 180.0);
+        cameraX += frontX * cameraSpeed;
+        cameraY += frontY * cameraSpeed;
+        cameraZ += frontZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_S]) {
-        cameraX -= cameraSpeed * sin(cameraYaw * M_PI / 180.0);
-        cameraZ += cameraSpeed * cos(cameraYaw * M_PI / 180.0);
+        cameraX -= frontX * cameraSpeed;
+        cameraY -= frontY * cameraSpeed;
+        cameraZ -= frontZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_A]) {
-        cameraX -= cameraSpeed * cos(cameraYaw * M_PI / 180.0);
-        cameraZ -= cameraSpeed * sin(cameraYaw * M_PI / 180.0);
+        float rightX = cos(yaw - M_PI / 2.0f);
+        float rightZ = sin(yaw - M_PI / 2.0f);
+        cameraX -= rightX * cameraSpeed;
+        cameraZ -= rightZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_D]) {
-        cameraX += cameraSpeed * cos(cameraYaw * M_PI / 180.0);
-        cameraZ += cameraSpeed * sin(cameraYaw * M_PI / 180.0);
+        float rightX = cos(yaw + M_PI / 2.0f);
+        float rightZ = sin(yaw + M_PI / 2.0f);
+        cameraX += rightX * cameraSpeed;
+        cameraZ += rightZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_Q]) {
         cameraY -= cameraSpeed;
@@ -69,7 +83,8 @@ void move_camera() {
     }
 }
 
-void draw_cube() {
+void draw_cube(float r, float g, float b) {
+    glColor3f(r, g, b);
     glBegin(GL_QUADS);
     // Front face
     glVertex3f(-0.5f, -0.5f, 0.5f);
@@ -111,26 +126,50 @@ void draw_cube() {
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Set up camera
-    glRotatef(-cameraPitch, 1.0f, 0.0f, 0.0f);
-    glRotatef(-cameraYaw, 0.0f, 1.0f, 0.0f);
-    glTranslatef(-cameraX, -cameraY, -cameraZ);
+    float yaw = cameraYaw * M_PI / 180.0f;
+    float pitch = cameraPitch * M_PI / 180.0f;
 
-    // Draw cubes
+    float targetX = cameraX + cos(yaw) * cos(pitch);
+    float targetY = cameraY + sin(pitch);
+    float targetZ = cameraZ + sin(yaw) * cos(pitch);
+
+    gluLookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, 0.0f, 1.0f, 0.0f);
+
+    // Draw cubes with different colors based on depth
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 20; j++) {
             for (int k = 0; k < 20; k++) {
+                float r = (float)i / 20.0f;
+                float g = (float)j / 20.0f;
+                float b = (float)k / 20.0f;
+
                 glPushMatrix();
-                glTranslatef(i - 4.5, j - 4.5, k);
+                glTranslatef(i - 9.5, j - 9.5, k - 9.5);
                 glScalef(0.5, 0.5, 0.5);
-                draw_cube();
+                draw_cube(r, g, b);
                 glPopMatrix();
             }
         }
     }
+
+    // Draw a grid on the XZ plane
+    glColor3f(0.5f, 0.5f, 0.5f);
+    glBegin(GL_LINES);
+    for (int i = -10; i <= 10; i++) {
+        glVertex3f(i, 0.0f, -10.0f);
+        glVertex3f(i, 0.0f, 10.0f);
+        glVertex3f(-10.0f, 0.0f, i);
+        glVertex3f(10.0f, 0.0f, i);
+    }
+    glEnd();
 
     glfwSwapBuffers(window);
 }

@@ -64,16 +64,16 @@ void move_camera() {
         cameraZ -= frontZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_A]) {
-        float rightX = cos(yaw - M_PI / 2.0f);
-        float rightZ = sin(yaw - M_PI / 2.0f);
-        cameraX -= rightX * cameraSpeed;
-        cameraZ -= rightZ * cameraSpeed;
-    }
-    if (keys[GLFW_KEY_D]) {
-        float rightX = cos(yaw + M_PI / 2.0f);
-        float rightZ = sin(yaw + M_PI / 2.0f);
+        float rightX = sin(yaw);
+        float rightZ = -cos(yaw);
         cameraX += rightX * cameraSpeed;
         cameraZ += rightZ * cameraSpeed;
+    }
+    if (keys[GLFW_KEY_D]) {
+        float rightX = sin(yaw);
+        float rightZ = -cos(yaw);
+        cameraX -= rightX * cameraSpeed;
+        cameraZ -= rightZ * cameraSpeed;
     }
     if (keys[GLFW_KEY_Q]) {
         cameraY -= cameraSpeed;
@@ -144,9 +144,9 @@ void display() {
     gluLookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, 0.0f, 1.0f, 0.0f);
 
     // Draw cubes with different colors based on depth
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
-            for (int k = 0; k < 20; k++) {
+    for (int i = 0; i < 30; i++) {
+        for (int j = 0; j < 30; j++) {
+            for (int k = 0; k < 30; k++) {
                 float r = (float)i / 20.0f;
                 float g = (float)j / 20.0f;
                 float b = (float)k / 20.0f;

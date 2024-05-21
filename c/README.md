@@ -1,1 +1,1 @@
-git commit -m "Fix cubes in C, they are looking good"
+gcc -o cubes main.c -lGL -lGLU -lGLEW -lglfw -lm

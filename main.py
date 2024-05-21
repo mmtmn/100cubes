@@ -30,10 +30,11 @@ class MyApp(ShowBase):
         # Create cubes
         for i in range(10):
             for j in range(10):
-                cube_node = self.render.attachNewNode('cube_node')
-                cube_node.setScale(0.5)
-                cube_node.setPos(i - 4.5, j - 4.5, 0)
-                cube_node.attachNewNode(cube_model)
+                for k in range(2):
+                    cube_node = self.render.attachNewNode('cube_node')
+                    cube_node.setScale(0.5)
+                    cube_node.setPos(i - 4.5, j - 4.5, k)
+                    cube_node.attachNewNode(cube_model)
 
         # Set up keyboard controls
         self.accept('escape', self.quit)
@@ -43,6 +44,8 @@ class MyApp(ShowBase):
         self.accept('d', self.move_right)
         self.accept('arrow_left', self.rotate_left)
         self.accept('arrow_right', self.rotate_right)
+        self.accept('arrow_up', self.rotate_up)
+        self.accept('arrow_down', self.rotate_down)
 
         # Enable wireframe mode
         base.toggleWireframe()
@@ -121,6 +124,12 @@ class MyApp(ShowBase):
 
     def rotate_right(self):
         self.camera.setH(self.camera.getH() - 5)
+
+    def rotate_up(self):
+        self.camera.setP(self.camera.getP() - 5)
+
+    def rotate_down(self):
+        self.camera.setP(self.camera.getP() + 5)
 
     def quit(self):
         self.userExit()

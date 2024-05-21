@@ -8,4 +8,5 @@ python:
 c:
 
 
-![image](https://github.com/mmtmn/3d-python-cubes/assets/42742390/646140bf-bd29-42d3-9f5a-76f8157c748e)
+![image](https://github.com/mmtmn/3d-cubes/assets/42742390/1bbc9ab9-2149-4bcb-95c7-321fe3bc1b17)
+

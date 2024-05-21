@@ -144,15 +144,15 @@ void display() {
     gluLookAt(cameraX, cameraY, cameraZ, targetX, targetY, targetZ, 0.0f, 1.0f, 0.0f);
 
     // Draw cubes with different colors based on depth
-    for (int i = 0; i < 100; i++) {
-        for (int j = 0; j < 100; j++) {
-            for (int k = 0; k < 100; k++) {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            for (int k = 0; k < 10; k++) {
                 float r = (float)i / 20.0f;
                 float g = (float)j / 20.0f;
                 float b = (float)k / 20.0f;
 
                 glPushMatrix();
-                glTranslatef(i - 9.5, j - 9.5, k - 9.5);
+                glTranslatef((i - 9.5) * 2.0, (j - 9.5) * 2.0, (k - 9.5) * 2.0);
                 glScalef(0.5, 0.5, 0.5);
                 draw_cube(r, g, b);
                 glPopMatrix();
@@ -161,7 +161,7 @@ void display() {
     }
 
     // Draw a grid on the XZ plane
-    glColor3f(0.5f, 0.5f, 0.5f);
+    glColor3f(0.0f, 0.0f, 0.0f);
     glBegin(GL_LINES);
     for (int i = -10; i <= 10; i++) {
         glVertex3f(i, 0.0f, -10.0f);

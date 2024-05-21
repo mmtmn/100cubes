@@ -41,6 +41,8 @@ class MyApp(ShowBase):
         self.accept('s', self.move_backward)
         self.accept('a', self.move_left)
         self.accept('d', self.move_right)
+        self.accept('arrow_left', self.rotate_left)
+        self.accept('arrow_right', self.rotate_right)
 
         # Enable wireframe mode
         base.toggleWireframe()
@@ -113,6 +115,12 @@ class MyApp(ShowBase):
 
     def move_right(self):
         self.camera.setX(self.camera, 1)
+
+    def rotate_left(self):
+        self.camera.setH(self.camera.getH() + 5)
+
+    def rotate_right(self):
+        self.camera.setH(self.camera.getH() - 5)
 
     def quit(self):
         self.userExit()
